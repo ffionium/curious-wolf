@@ -1,0 +1,79 @@
+.headerContainer {
+    /* background: linear-gradient(to bottom, #007bff, #00d4ff);   */
+    background: linear-gradient(to bottom, #eaafe9, #b6edfc);      
+    margin-bottom: 15px
+}
+
+.h1 {
+    font-size: 32px;  
+    font-weight: bold;  
+    color: #333;  
+    text-align: center; 
+    border-radius: 5px;  
+  }
+  
+.filterSection {
+    width:80%;
+    display: flex;
+    align-items: center; 
+    gap: 20px;  
+} 
+  
+.combobox {
+    flex: 1;  /* Allows combobox to expand */
+    min-width: 200px; 
+    padding-bottom: 10px;
+    margin-left: 25%;
+}
+
+.priorityFilterButton {
+    /* flex: 2; */
+    background-color: #007bff;  
+    color: white; 
+    font-size: 1rem;
+    font-weight: normal;
+    /* text-align: center; */
+    width: 12.5%;
+    height: 80%;
+    margin-top: 8px;
+    /* padding: 20px 20px; */
+    margin-right: 1%;
+    padding-right: 2.5%;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+  
+  .priorityFilterButton:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  .priorityFilterButton:active {
+    background-color: #004494; /* Even darker blue when clicked */
+    transform: scale(0.98); /* Slight click effect */
+  }
+
+.expandButton {
+    background-color: #007bff;
+    color: white; 
+    font-size: 1rem;
+    font-weight: normal;
+    width: 12.5%;
+    height: 80%;
+    margin-top: 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+  
+  .expandButton:hover {
+    background-color: #0056b3; 
+  }
+  
+  .expandButton:active {
+    background-color: #004494;
+    transform: scale(0.98); 
+  }
+
