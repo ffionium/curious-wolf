@@ -1,9 +1,5 @@
 public with sharing class CaseDataController {
   
-
-  // add filter parameter
-  // condense to one method using Database.QueryLocator and string
-
   @AuraEnabled(cacheable=true)
   public static List<Case> getCases(String filter) {
 
@@ -24,12 +20,4 @@ public with sharing class CaseDataController {
     }
   }
 
-  // @AuraEnabled(cacheable=true)
-  // public static List<Case> getCasesExpanded(String filter) {
-  //   return [SELECT Id, CaseNumber, Subject, Status, Priority, Account.Name, Account.Phone, Account.Website, Contact.Name, Contact.Email
-  //           FROM Case 
-  //           WHERE Status <> 'CLosed'
-  //           AND (Priority = 'High' 
-  //           OR Priority = 'Medium')];
-  // }
 }

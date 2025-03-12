@@ -10,17 +10,17 @@
             options={priorities}
             onchange={handlePriorityFilter}>
             </lightning-combobox>
-            <button class="priorityFilterButton" name="priorityFilterButton">Filter Cases</button>
-            <button class="priorityFilterButton" name="expandButton" onclick={handleToggle}>Expand</button>
+            <button class="button" name="priorityFilterButton" onclick={handleFilterButton}>Filter Cases</button>
+            <button class="expandButton" name="expandButton" onclick={handleToggleButton}>Expand</button>
         </div>
     </div>
 
     <div if:false={showExpanded}>
-        <lightning-datatable class="datatable" key-field="Id" data={cases} columns={columns} hide-checkbox-column>
+        <lightning-datatable key-field="Id" data={cases} columns={columns} hide-checkbox-column>
         </lightning-datatable>
     </div>
     <div if:true={showExpanded}>
-        <lightning-datatable class="datatableExpanded" key-field="Id" data={casesExpanded} columns={columnsExpanded} hide-checkbox-column>
+        <lightning-datatable key-field="Id" data={casesExpanded} columns={columnsExpanded} hide-checkbox-column>
         </lightning-datatable>    
     </div>
 </template>
