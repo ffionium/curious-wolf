@@ -1,6 +1,7 @@
 @IsTest
 public class TestCaseDataController {
 
+
     @TestSetup
     static void createCases() {
 
@@ -11,7 +12,8 @@ public class TestCaseDataController {
         c.Priority = 'High';
         c.Origin = 'Phone';
 
-        insert c;        
+        insert c;
+        
     }
 
     @isTest

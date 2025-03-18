@@ -1,17 +1,19 @@
+/* eslint-disable @lwc/lwc/no-async-operation */
 import { LightningElement, wire, track, api } from 'lwc';
+import ShowToastEvent from 'lightning/platformShowToastEvent';
 import getCases from '@salesforce/apex/CaseDataController.getCases';
-// import getCasesExpanded from '@salesforce/apex/CaseDataController.getCasesExpanded';
+import { refreshApex } from "@salesforce/apex";
 
 const CASE_COLUMNS = [
     { label: 'Case Number', fieldName: 'CaseNumber' },
-    { label: 'Subject', fieldName: 'Subject' },
+    { label: 'Type', fieldName: 'Type' },
     { label: 'Status', fieldName: 'Status' },
     { label: 'Priority', fieldName: 'Priority' }
 ];
 
 const EXPANDED_CASE_COLUMNS = [
     { label: 'Case Number', fieldName: 'CaseNumber' },
-    { label: 'Subject', fieldName: 'Subject' },
+    { label: 'Type', fieldName: 'Type' },
     { label: 'Status', fieldName: 'Status' },
     { label: 'Priority', fieldName: 'Priority' },
     { label: 'Account Name', fieldName: 'AccountName', type: 'text' },
@@ -36,8 +38,10 @@ export default class caseDatatable extends LightningElement {
     casesExpanded;
 
     @track priority = 'All';
-    @api selectedPriority = 'Choose a priority filter';
+    @track selectedPriority = 'Choose a priority filter';
     @track showExpanded = false;
+
+    @track selectedRows;
 
     @wire(getCases, { filter: '$priority' })
     wiredCases({ error, data }) {
@@ -91,6 +95,7 @@ export default class caseDatatable extends LightningElement {
     handleFilterButton() {
         try {
             this.priority = this.selectedPriority;
+            // put this inside promise?
             refreshApex(this.wiredCases);
         } catch (error) {
             console.error('Error in handleFilterButton:', error);
@@ -102,4 +107,57 @@ export default class caseDatatable extends LightningElement {
         this.showExpanded = !this.showExpanded;
     }
 
+    // use promise?
+    // getSelectedCase(event) {
+    //     // this.selectedRows = event.detail.selectedRows;
+    //     // console.log('selectedRows --- ' + this.selectedRows.Account.Name);
+    //     this.handlePromise();
+    //     // Display that fieldName of the selected rows
+    //     // for (let i = 0; i < selectedRows.length; i++) {
+    //     //     alert('You selected: ' + selectedRows[i].OpportunityName);
+    //     // }
+    // }
+
+    showToast(rowsString) {
+        const evt = new ShowToastEvent({
+          title: 'Selected Row:',
+          message: rowsString[0].CaseNumber,
+          variant: 'info',
+        });
+        this.dispatchEvent(evt);
+      }
+
+    handlePromise(event) {
+        console.log('handlePromise...');
+        this.selectedRows = JSON.stringify(event.detail.selectedRows);
+        // pass an executor function to the Promise constructor. Takes function, function args (provided by the promise constructor itself). Order is always same, resolve then reject
+        const myPromise = new Promise((fulfill, decline) => {    
+            if (this.selectedRows) {
+                // call function passed as args in constructor. Anything passed here is available in .then
+                fulfill(this.selectedRows);
+                console.log('promise fulfilled');
+            } else {
+                // Anything passed here is available in .catch handler
+                decline('No rows selected.');
+                console.log('promise declined');
+            }
+        });
+        
+        myPromise
+            // arg here is whatever was passed in fulfill
+            .then((rows) => {
+                console.log('rows --- ' + rows); 
+                let rowsString = JSON.stringify(rows);
+                console.log('rows --- ' + rowsString); 
+                // this.showToast(rowsString);
+                console.log('executing fulfilled promise');
+
+            })
+            // arg here is whatever was passed in decline
+            // can also execute if there is error in .then block
+            .catch((error) => {
+                console.log('promise error');
+                console.log(error); 
+            });
+    }
 }

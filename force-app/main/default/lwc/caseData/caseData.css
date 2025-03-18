@@ -1,6 +1,7 @@
 .headerContainer {
     /* background: linear-gradient(to bottom, #007bff, #00d4ff);   */
-    background: linear-gradient(to bottom, #eaafe9, #b6edfc);      
+    background: linear-gradient(to bottom, #eaafe9, #b6edfc);  
+    border-radius: 20px;    
     margin-bottom: 15px
 }
 
@@ -87,4 +88,3 @@
     border-radius: 10px;
     padding: 10px; 
 } */
-

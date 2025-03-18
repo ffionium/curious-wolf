@@ -15,12 +15,15 @@
         </div>
     </div>
 
+    <c-case-detail selected-case-details={selectedRows}></c-case-detail>
+
     <div if:false={showExpanded}>
-        <lightning-datatable key-field="Id" data={cases} columns={columns} hide-checkbox-column>
+        <lightning-datatable key-field="Id" data={cases} columns={columns} onrowselection={handlePromise}>
         </lightning-datatable>
     </div>
     <div if:true={showExpanded}>
-        <lightning-datatable key-field="Id" data={casesExpanded} columns={columnsExpanded} hide-checkbox-column>
+        <lightning-datatable key-field="Id" data={casesExpanded} columns={columnsExpanded} onrowselection={handlePromise}>
         </lightning-datatable>    
     </div>
+
 </template>

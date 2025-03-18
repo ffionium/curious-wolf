@@ -7,9 +7,9 @@ public with sharing class CaseDataController {
     String query;
 
     if (filter <> 'All') {
-      query = 'SELECT Id, CaseNumber, Subject, Status, Priority, Account.Name, Account.Phone, Account.Website, Contact.Name, Contact.Email FROM Case WHERE Status <> \'Closed\' AND Priority = \'' + filter + '\'';
+      query = 'SELECT Id, CaseNumber, Subject, Status, Priority, Type, Account.Name, Account.Phone, Account.Website, Contact.Name, Contact.Email FROM Case WHERE Status <> \'Closed\' AND Priority = \'' + filter + '\'';
     } else {
-      query = 'SELECT Id, CaseNumber, Subject, Status, Priority, Account.Name, Account.Phone, Account.Website, Contact.Name, Contact.Email FROM Case WHERE Status <> \'Closed\'';
+      query = 'SELECT Id, CaseNumber, Subject, Status, Priority, Type, Account.Name, Account.Phone, Account.Website, Contact.Name, Contact.Email FROM Case WHERE Status <> \'Closed\'';
     }
     
     try {
