@@ -42,6 +42,7 @@ export default class caseDatatable extends LightningElement {
     @track showExpanded = false;
 
     @track selectedRows;
+    @track caseNumberInParent;
 
     @wire(getCases, { filter: '$priority' })
     wiredCases({ error, data }) {
@@ -118,18 +119,19 @@ export default class caseDatatable extends LightningElement {
     //     // }
     // }
 
-    showToast(rowsString) {
-        const evt = new ShowToastEvent({
-          title: 'Selected Row:',
-          message: rowsString[0].CaseNumber,
-          variant: 'info',
-        });
-        this.dispatchEvent(evt);
-      }
+    // showToast(rowsString) {
+    //     const evt = new ShowToastEvent({
+    //       title: 'Selected Row:',
+    //       message: rowsString[0].CaseNumber,
+    //       variant: 'info',
+    //     });
+    //     this.dispatchEvent(evt);
+    //   }
 
-    handlePromise(event) {
-        console.log('handlePromise...');
-        this.selectedRows = JSON.stringify(event.detail.selectedRows);
+    handleCaseSelection(event) {
+        console.log('handleCaseSelection Promise...');
+        this.selectedRows = event.detail.selectedRows;
+        // this.caseNumberInParent = this.selectedRows[0].CaseNumber;
         // pass an executor function to the Promise constructor. Takes function, function args (provided by the promise constructor itself). Order is always same, resolve then reject
         const myPromise = new Promise((fulfill, decline) => {    
             if (this.selectedRows) {
@@ -146,12 +148,13 @@ export default class caseDatatable extends LightningElement {
         myPromise
             // arg here is whatever was passed in fulfill
             .then((rows) => {
-                console.log('rows --- ' + rows); 
+                console.log('executing fulfilled promise...');
+                this.selectedRows = rows;
+                console.log('selectedRows raw: ' + this.selectedRows);
                 let rowsString = JSON.stringify(rows);
-                console.log('rows --- ' + rowsString); 
-                // this.showToast(rowsString);
-                console.log('executing fulfilled promise');
-
+                console.log('rowsString --- ' + rowsString); 
+                this.caseNumberInParent = this.selectedRows[0].CaseNumber;
+                console.log('caseNumberInParent' + this.caseNumberInParent);                              
             })
             // arg here is whatever was passed in decline
             // can also execute if there is error in .then block
