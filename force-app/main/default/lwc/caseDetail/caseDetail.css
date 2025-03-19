@@ -1,7 +1,7 @@
 .main-container {
     /* float: left; */
     width: 75%;
-    height: 75px;
+    height: 225px;
     /* background-color: #b6edfc; */
     background: linear-gradient(to top, #eaafe9, #b6edfc); 
     /* background-color: linear-gradient(to bottom, #eaafe9, #b6edfc);  */
@@ -19,9 +19,9 @@
     width: 50%;
     height: 90%;
     /* text-align: center; */
-    font-size: medium;
+    font-size: 14px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-weight: 200;
+    /* font-weight: 200; */
     padding-left: 10%;
     padding-top: 2.5%;
     /* background-color: #b6edfc;
@@ -30,6 +30,61 @@
     /* padding: 50px; */
 }
 
-.table, td {
-    border: 1px solid black;
+table {
+    border-collapse: separate;
+    border: 2px solid rgba(0, 0, 0, 0.301);
+    border-radius: 6px;
+    width: 100%;
+}
+
+th {
+    border: 1px solid rgba(0, 0, 0, 0.301);
+    font-weight: 100;
+    text-align: center;
+    background-color: rgb(208, 250, 248);
+    width: 20%;
+    padding: 2.5%;
+}
+
+th.details {
+    width: 60%;
+}
+
+td {
+    border: 1px solid rgba(0, 0, 0, 0.301);
+    font-size: 12px;
+    background-color: rgb(246, 247, 247);
+    width: 20%;
+    padding: 2%;
   }
+
+td.details {
+    width: 40%;
+}
+
+.button {
+    background-color: #007bff;  
+    color: white; 
+    font-size: 1rem;
+    font-weight: 80;
+    width: 40%;
+    height: 20%;
+    margin-top: 8px;
+    margin-right: 1%;
+    padding-right: 2.5%;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Darker blue on hover */
+.button:hover {
+    background-color: #0056b3; 
+}
+
+/* darker again w/ click effect */
+.button:active {
+    background-color: #004494; 
+    transform: scale(0.98); 
+}

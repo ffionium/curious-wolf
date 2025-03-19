@@ -11,11 +11,11 @@
             onchange={handlePriorityFilter}>
             </lightning-combobox>
             <button class="button" name="priorityFilterButton" onclick={handleFilterButton}>Filter Cases</button>
-            <button class="expandButton" name="expandButton" onclick={handleToggleButton}>Expand</button>
+            <button class="button" name="expandButton" onclick={handleToggleButton}>Expand</button>
         </div>
     </div>
 
-    <c-case-detail selected-case-details={selectedRowsString} case-number={caseNumberInParent}></c-case-detail>
+    <c-case-detail selected-case-details={selectedRowsString} case-number={caseNumberInParent} case-details={caseDetailsInParent} case-priority={casePriorityInParent}></c-case-detail>
 
     <div if:false={showExpanded}>
         <lightning-datatable key-field="Id" data={cases} columns={columns} onrowselection={handleCaseSelection}>

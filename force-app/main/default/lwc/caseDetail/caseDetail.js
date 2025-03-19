@@ -5,8 +5,41 @@ export default class CaseDetail extends LightningElement {
 
     // @api caseDetails;
 
-    @api selectedCaseDetails;
+    @api caseDetails;
     @api caseNumber;
+    @api casePriority;
+
+    flagURL;
+    flagVisible = false;
+
+    highPriority = 'https://myflag.com.au/wp-content/uploads/2017/02/red-hand-waver-flag.jpg';
+    mediumPriority = 'https://m.media-amazon.com/images/I/31aNRfZKbBL._SY445_SX342_QL70_ML2_.jpg';
+    lowPriority = 'https://i.ebayimg.com/images/g/VzUAAOSwU7BhOSyK/s-l1200.jpg';
+
+    renderedCallback() {
+        
+        switch(this.casePriority) {
+            case 'High':
+              this.flagVisible = true;
+              this.flagURL = this.highPriority;
+              break;
+            case 'Medium':
+                this.flagVisible = true;
+                this.flagURL = this.mediumPriority;
+              break;
+            case 'Low':
+                this.flagVisible = true;
+                this.flagURL = this.lowPriority;
+            break;
+            default:
+                this.flagURL = '';
+                this.flagVisible = false;
+          }
+
+        if (this.casePriority === 'High') {
+            this.flagURL = this.highPriority;
+        }
+    }
 
     // renderedCallback() {
     //     this.setCaseDetails();

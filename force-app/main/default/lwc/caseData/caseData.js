@@ -1,6 +1,6 @@
 /* eslint-disable @lwc/lwc/no-async-operation */
 import { LightningElement, wire, track, api } from 'lwc';
-import ShowToastEvent from 'lightning/platformShowToastEvent';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getCases from '@salesforce/apex/CaseDataController.getCases';
 import { refreshApex } from "@salesforce/apex";
 
@@ -43,6 +43,8 @@ export default class caseDatatable extends LightningElement {
 
     @track selectedRows;
     @track caseNumberInParent;
+    @track caseDetailsInParent;
+    @track casePriorityInParent;
 
     @wire(getCases, { filter: '$priority' })
     wiredCases({ error, data }) {
@@ -108,39 +110,21 @@ export default class caseDatatable extends LightningElement {
         this.showExpanded = !this.showExpanded;
     }
 
-    // use promise?
-    // getSelectedCase(event) {
-    //     // this.selectedRows = event.detail.selectedRows;
-    //     // console.log('selectedRows --- ' + this.selectedRows.Account.Name);
-    //     this.handlePromise();
-    //     // Display that fieldName of the selected rows
-    //     // for (let i = 0; i < selectedRows.length; i++) {
-    //     //     alert('You selected: ' + selectedRows[i].OpportunityName);
-    //     // }
-    // }
-
-    // showToast(rowsString) {
-    //     const evt = new ShowToastEvent({
-    //       title: 'Selected Row:',
-    //       message: rowsString[0].CaseNumber,
-    //       variant: 'info',
-    //     });
-    //     this.dispatchEvent(evt);
-    //   }
-
     handleCaseSelection(event) {
         console.log('handleCaseSelection Promise...');
         this.selectedRows = event.detail.selectedRows;
+        let rowsSize = this.selectedRows.length;
         // this.caseNumberInParent = this.selectedRows[0].CaseNumber;
         // pass an executor function to the Promise constructor. Takes function, function args (provided by the promise constructor itself). Order is always same, resolve then reject
-        const myPromise = new Promise((fulfill, decline) => {    
-            if (this.selectedRows) {
+        const myPromise = new Promise((fulfill, decline) => {  
+            console.log('rowsSize: ' + rowsSize);  
+            if (rowsSize === 1) {
                 // call function passed as args in constructor. Anything passed here is available in .then
                 fulfill(this.selectedRows);
                 console.log('promise fulfilled');
             } else {
                 // Anything passed here is available in .catch handler
-                decline('No rows selected.');
+                decline('No rows/too many rows selected.');
                 console.log('promise declined');
             }
         });
@@ -154,13 +138,42 @@ export default class caseDatatable extends LightningElement {
                 let rowsString = JSON.stringify(rows);
                 console.log('rowsString --- ' + rowsString); 
                 this.caseNumberInParent = this.selectedRows[0].CaseNumber;
-                console.log('caseNumberInParent' + this.caseNumberInParent);                              
+                console.log('caseNumberInParent: ' + this.caseNumberInParent); 
+                this.caseDetailsInParent = this.selectedRows[0].Subject;
+                console.log('caseDetailsInParent: ' + this.caseDetailsInParent);    
+                this.casePriorityInParent = this.selectedRows[0].Priority;             
             })
             // arg here is whatever was passed in decline
             // can also execute if there is error in .then block
             .catch((error) => {
-                console.log('promise error');
-                console.log(error); 
+                console.log('promise error: ' + error);
+                this.showToast(error);
             });
     }
+
+    showToast(msg) {
+        const evt = new ShowToastEvent({
+          title: 'Error:',
+          message: msg,
+          variant: 'error',
+        });
+        this.dispatchEvent(evt);
+      }
+
+    // showToast(message) {
+    //     const showToastEvent = document.createElement('div');
+    //     showToastEvent.className = 'toast';
+    //     showToastEvent.textContent = message;
+    //     document.body.appendChild(showToastEvent);
+    
+    //     setTimeout(() => {
+    //         showToastEvent.classList.add('show');
+    //     }, 100);
+    
+    //     setTimeout(() => {
+    //         showToastEvent.classList.remove('show');
+    //         document.body.removeChild(showToastEvent);
+    //     }, 3100);
+    // }
+
 }
