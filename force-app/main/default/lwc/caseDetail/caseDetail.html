@@ -13,10 +13,11 @@
                     <td>Case Number:</td><td class="details">{caseNumber}</td>
                 </tr>
                 <tr>
-                    <td>Case Details:</td><td class="details">{caseDetails}</td></p>
+                    <td>Case Subject:</td><td class="details">{caseSubject}</td></p>
                 </tr>
             </table>
-            <button class="button">Change priority</button>
+            <button class="button" onclick={handlePriorityIncrease}>Increase priority</button>
+            <button class="button" onclick={handlePriorityDecrease}>Decrease priority</button>
         </div>
         <div if:true={flagVisible} class="half-container">
             <p>Current priority for selected case: </p>

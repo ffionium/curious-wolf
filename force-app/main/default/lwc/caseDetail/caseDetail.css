@@ -1,7 +1,7 @@
 .main-container {
     /* float: left; */
     width: 75%;
-    height: 225px;
+    height: 275px;
     /* background-color: #b6edfc; */
     background: linear-gradient(to top, #eaafe9, #b6edfc); 
     /* background-color: linear-gradient(to bottom, #eaafe9, #b6edfc);  */
@@ -63,15 +63,18 @@ td.details {
 }
 
 .button {
+    float: left;
     background-color: #007bff;  
     color: white; 
-    font-size: 1rem;
+    text-align: center;
+    font-size: 12px;
     font-weight: 80;
     width: 40%;
-    height: 20%;
-    margin-top: 8px;
-    margin-right: 1%;
-    padding-right: 2.5%;
+    height: 15%;
+    /* margin-top: 16px;
+    margin-right: 1%; */
+    margin: 16px;
+    padding: 2.5%;
     border: none;
     border-radius: 5px;
     cursor: pointer;

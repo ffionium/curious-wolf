@@ -1,13 +1,16 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
 
 export default class CaseDetail extends LightningElement {
 
 
-    // @api caseDetails;
+    @api selectedRow;
 
-    @api caseDetails;
-    @api caseNumber;
-    @api casePriority;
+    @track caseId;
+    @track caseSubject;
+    @track caseNumber;
+    @track casePriority;
+
+    priorityInt;
 
     flagURL;
     flagVisible = false;
@@ -16,69 +19,101 @@ export default class CaseDetail extends LightningElement {
     mediumPriority = 'https://m.media-amazon.com/images/I/31aNRfZKbBL._SY445_SX342_QL70_ML2_.jpg';
     lowPriority = 'https://i.ebayimg.com/images/g/VzUAAOSwU7BhOSyK/s-l1200.jpg';
 
-    renderedCallback() {
-        
+    @api
+    assignCaseData() {
+        if(this.selectedRow) {
+            console.log('renderedCallback selectedRow: ' + this.selectedRow);
+            console.log('renderedCallback selectedRow String: ' + JSON.stringify(this.selectedRow));
+            this.caseId = this.selectedRow[0].Id;
+            this.caseNumber = this.selectedRow[0].CaseNumber;
+            this.caseSubject = this.selectedRow[0].Subject;
+            this.casePriority = this.selectedRow[0].Priority;
+            console.log('caseId: ' + this.caseId);
+            this.renderFlag();
+        }
+    }
+
+    renderFlag() {
+
         switch(this.casePriority) {
             case 'High':
               this.flagVisible = true;
               this.flagURL = this.highPriority;
+              this.priorityInt = 3;
               break;
             case 'Medium':
                 this.flagVisible = true;
                 this.flagURL = this.mediumPriority;
+                this.priorityInt = 2;
               break;
             case 'Low':
                 this.flagVisible = true;
                 this.flagURL = this.lowPriority;
+                this.priorityInt = 1;
             break;
             default:
                 this.flagURL = '';
                 this.flagVisible = false;
-          }
-
-        if (this.casePriority === 'High') {
-            this.flagURL = this.highPriority;
         }
     }
 
     // renderedCallback() {
-    //     this.setCaseDetails();
+        
+    //     if(this.selectedRow) {
+    //         console.log('renderedCallback selectedRow: ' + this.selectedRow);
+    //         console.log('renderedCallback selectedRow String: ' + JSON.stringify(this.selectedRow));
+    //         this.caseId = this.selectedRow[0].Id;
+    //         this.caseNumber = this.selectedRow[0].CaseNumber;
+    //         this.caseSubject = this.selectedRow[0].Subject;
+    //         this.casePriority = this.selectedRow[0].Priority;
+    //         console.log('caseId: ' + this.caseId);
+    //     }
+
+    //     switch(this.casePriority) {
+    //         case 'High':
+    //           this.flagVisible = true;
+    //           this.flagURL = this.highPriority;
+    //           this.priorityInt = 3;
+    //           break;
+    //         case 'Medium':
+    //             this.flagVisible = true;
+    //             this.flagURL = this.mediumPriority;
+    //             this.priorityInt = 2;
+    //           break;
+    //         case 'Low':
+    //             this.flagVisible = true;
+    //             this.flagURL = this.lowPriority;
+    //             this.priorityInt = 1;
+    //         break;
+    //         default:
+    //             this.flagURL = '';
+    //             this.flagVisible = false;
+    //       }
+
+    //     if (this.casePriority === 'High') {
+    //         this.flagURL = this.highPriority;
+    //     }
     // }
 
-    // setCaseDetails() {
-    //     console.log('selectedCaseDetails --- ' + this.selectedCaseDetails)
-    //     this.caseNumber = this.selectedCaseDetails[0].CaseNumber;
-    // }
+    handlePriorityIncrease() {
+        console.log('handlePriorityIncrease clicked.');
+        let priorityInt = this.priorityInt+1;
+        this.dispatchEvent(new CustomEvent('prioritychange', {
+            detail: {
+                priority: priorityInt
+            }
+        }));
+    }
 
-    // set caseNumber(selectedCaseDetails) {
-    //     this._caseNumber = selectedCaseDetails[0].CaseNumber;
-    //     console.log('CaseNumber in child: ' + this.caseNumber)
-    // }
-
-    // @api
-    // get caseNumber() {
-    //     return this._caseNumber;
-    // }
-
-    // promise approach
-    // handlePromise() {
-    //     const caseDetailPromise = new Promise((success, error) => {
-    //         if(this.selectedCaseDetails) {
-    //             success(this.selectedCaseDetails[0].CaseNumber);
-    //             console.log('caseDetailPromise success!')
-    //         } else {
-    //             error('No selectedCaseDetails available.')
-    //         }
-    //     });
-
-    //     caseDetailPromise
-    //         .then((caseNumberString) => {
-    //             console.log('caseNumber --- ' + caseNumberString)
-    //             this.caseNumber = caseNumberString;
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //         });
-    // }
+    handlePriorityDecrease() {
+        console.log('handlePriorityDecrease clicked.');
+        let priorityInt = this.priorityInt-1;
+        this.dispatchEvent(new CustomEvent('prioritychange', {
+            detail: {
+                priority: priorityInt,
+                caseId: this.caseId
+            }
+        }));
+    }
 
 }

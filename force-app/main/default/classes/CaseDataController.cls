@@ -20,4 +20,11 @@ public with sharing class CaseDataController {
     }
   }
 
+  @AuraEnabled
+  public static void updateCasePriority(String priority, String caseId) {
+    System.debug('updateCasePriority called.');
+    System.debug('priority: ' + priority);
+    System.debug('caseId: ' + caseId);
+  }
+
 }

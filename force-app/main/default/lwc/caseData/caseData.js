@@ -2,6 +2,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getCases from '@salesforce/apex/CaseDataController.getCases';
+import updateCasePriority from '@salesforce/apex/CaseDataController.updateCasePriority';
 import { refreshApex } from "@salesforce/apex";
 
 const CASE_COLUMNS = [
@@ -41,17 +42,18 @@ export default class caseDatatable extends LightningElement {
     @track selectedPriority = 'Choose a priority filter';
     @track showExpanded = false;
 
-    @track selectedRows;
+    @track selectedRow;
     @track caseNumberInParent;
     @track caseDetailsInParent;
     @track casePriorityInParent;
+
+    newPriority;
 
     @wire(getCases, { filter: '$priority' })
     wiredCases({ error, data }) {
         // data: array of Case records
         if (data) {
-            console.log('data: ' + data);
-
+            // console.log('data: ' + data);
             // map() loops through records to return new object
             this.cases = data.map(caseRecord => {
                 return {
@@ -59,7 +61,7 @@ export default class caseDatatable extends LightningElement {
                     ...caseRecord
                 };
             });
-            console.log('cases: ' + this.cases);
+            // console.log('cases: ' + this.cases);
         } else if (error) {
             console.error(error);
         }
@@ -79,7 +81,7 @@ export default class caseDatatable extends LightningElement {
                     ContactEmail: caseRecord.Contact.Email
                 };
             });
-            console.log('cases expanded: ' + this.casesExpanded);
+            // console.log('cases expanded: ' + this.casesExpanded);
         } else if (error) {
             console.error(error);
         }
@@ -98,8 +100,6 @@ export default class caseDatatable extends LightningElement {
     handleFilterButton() {
         try {
             this.priority = this.selectedPriority;
-            // put this inside promise?
-            refreshApex(this.wiredCases);
         } catch (error) {
             console.error('Error in handleFilterButton:', error);
         } 
@@ -110,17 +110,20 @@ export default class caseDatatable extends LightningElement {
         this.showExpanded = !this.showExpanded;
     }
 
+    // don't really need a promise here?
     handleCaseSelection(event) {
         console.log('handleCaseSelection Promise...');
-        this.selectedRows = event.detail.selectedRows;
-        let rowsSize = this.selectedRows.length;
+        this.selectedRow = event.detail.selectedRows;
+        console.log('selectedRow: ' + this.selectedRow);
+        let rowsSize = this.selectedRow.length;
         // this.caseNumberInParent = this.selectedRows[0].CaseNumber;
+
+        // creating promise
         // pass an executor function to the Promise constructor. Takes function, function args (provided by the promise constructor itself). Order is always same, resolve then reject
-        const myPromise = new Promise((fulfill, decline) => {  
-            console.log('rowsSize: ' + rowsSize);  
+        const myPromise = new Promise((fulfill, decline) => {   
             if (rowsSize === 1) {
                 // call function passed as args in constructor. Anything passed here is available in .then
-                fulfill(this.selectedRows);
+                fulfill(this.selectedRow);
                 console.log('promise fulfilled');
             } else {
                 // Anything passed here is available in .catch handler
@@ -129,19 +132,22 @@ export default class caseDatatable extends LightningElement {
             }
         });
         
+        // consuming promise
         myPromise
             // arg here is whatever was passed in fulfill
             .then((rows) => {
                 console.log('executing fulfilled promise...');
-                this.selectedRows = rows;
-                console.log('selectedRows raw: ' + this.selectedRows);
-                let rowsString = JSON.stringify(rows);
-                console.log('rowsString --- ' + rowsString); 
-                this.caseNumberInParent = this.selectedRows[0].CaseNumber;
-                console.log('caseNumberInParent: ' + this.caseNumberInParent); 
-                this.caseDetailsInParent = this.selectedRows[0].Subject;
-                console.log('caseDetailsInParent: ' + this.caseDetailsInParent);    
-                this.casePriorityInParent = this.selectedRows[0].Priority;             
+
+                // refresh
+                this.handleRefresh();
+
+                // console.log('selectedRows raw: ' + this.selectedRows);
+                // let rowsString = JSON.stringify(rows);
+                // console.log('rows: ' + rows);
+                // console.log('rowsString --- ' + rowsString); 
+                this.caseNumberInParent = rows[0].CaseNumber;
+                this.caseSubjectInParent = rows[0].Subject;  
+                this.casePriorityInParent = rows[0].Priority;             
             })
             // arg here is whatever was passed in decline
             // can also execute if there is error in .then block
@@ -151,6 +157,10 @@ export default class caseDatatable extends LightningElement {
             });
     }
 
+    handleRefresh() {
+        this.template.querySelector('c-case-detail').assignCaseData();
+    }
+
     showToast(msg) {
         const evt = new ShowToastEvent({
           title: 'Error:',
@@ -158,22 +168,21 @@ export default class caseDatatable extends LightningElement {
           variant: 'error',
         });
         this.dispatchEvent(evt);
-      }
+    }
 
-    // showToast(message) {
-    //     const showToastEvent = document.createElement('div');
-    //     showToastEvent.className = 'toast';
-    //     showToastEvent.textContent = message;
-    //     document.body.appendChild(showToastEvent);
-    
-    //     setTimeout(() => {
-    //         showToastEvent.classList.add('show');
-    //     }, 100);
-    
-    //     setTimeout(() => {
-    //         showToastEvent.classList.remove('show');
-    //         document.body.removeChild(showToastEvent);
-    //     }, 3100);
-    // }
+    // calling Apex imperatively (calling once, no streaming of data), which returns a promise
+    async changePriority(event) {
+        let newPriority = event.detail.priority;
+        let caseId = event.detail.caseId;
+        console.log('new priority: ' + newPriority);
+            await updateCasePriority({ priority: newPriority, caseId: caseId })
+                .then(result => {
+                    console.log(result); // Handle the result
+                })
+                .catch(error => {
+                    console.error(error); // Handle the error
+                });
+                console.log('success updating case :)')
+    }  
 
 }
