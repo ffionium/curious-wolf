@@ -35,8 +35,8 @@ export default class caseDatatable extends LightningElement {
     @api columns = CASE_COLUMNS;
     @api columnsExpanded = EXPANDED_CASE_COLUMNS;
     priorities = priorities;
-    cases;
-    casesExpanded;
+    @track cases;
+    @track casesExpanded;
 
     @track priority = 'All';
     @track selectedPriority = 'Choose a priority filter';
@@ -139,7 +139,8 @@ export default class caseDatatable extends LightningElement {
                 console.log('executing fulfilled promise...');
 
                 // refresh
-                this.handleRefresh();
+                let refresh = 'child';
+                this.handleRefresh(refresh);
 
                 // console.log('selectedRows raw: ' + this.selectedRows);
                 // let rowsString = JSON.stringify(rows);
@@ -157,8 +158,13 @@ export default class caseDatatable extends LightningElement {
             });
     }
 
-    handleRefresh() {
-        this.template.querySelector('c-case-detail').assignCaseData();
+    handleRefresh(sectionToRefresh) {
+        if (sectionToRefresh === 'child') {
+         this.template.querySelector('c-case-detail').assignCaseData();
+        } else {
+            refreshApex(this.cases);
+            refreshApex(this.casesExpanded);
+        }
     }
 
     showToast(msg) {
@@ -175,14 +181,17 @@ export default class caseDatatable extends LightningElement {
         let newPriority = event.detail.priority;
         let caseId = event.detail.caseId;
         console.log('new priority: ' + newPriority);
+        console.log('caseId in parent: ' + caseId);
             await updateCasePriority({ priority: newPriority, caseId: caseId })
                 .then(result => {
                     console.log(result); // Handle the result
+                    console.log('success updating case :)');
+                    
                 })
                 .catch(error => {
                     console.error(error); // Handle the error
                 });
-                console.log('success updating case :)')
+        window.location.reload();
     }  
 
 }

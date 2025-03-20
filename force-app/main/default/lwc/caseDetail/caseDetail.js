@@ -28,7 +28,6 @@ export default class CaseDetail extends LightningElement {
             this.caseNumber = this.selectedRow[0].CaseNumber;
             this.caseSubject = this.selectedRow[0].Subject;
             this.casePriority = this.selectedRow[0].Priority;
-            console.log('caseId: ' + this.caseId);
             this.renderFlag();
         }
     }
@@ -57,50 +56,14 @@ export default class CaseDetail extends LightningElement {
         }
     }
 
-    // renderedCallback() {
-        
-    //     if(this.selectedRow) {
-    //         console.log('renderedCallback selectedRow: ' + this.selectedRow);
-    //         console.log('renderedCallback selectedRow String: ' + JSON.stringify(this.selectedRow));
-    //         this.caseId = this.selectedRow[0].Id;
-    //         this.caseNumber = this.selectedRow[0].CaseNumber;
-    //         this.caseSubject = this.selectedRow[0].Subject;
-    //         this.casePriority = this.selectedRow[0].Priority;
-    //         console.log('caseId: ' + this.caseId);
-    //     }
-
-    //     switch(this.casePriority) {
-    //         case 'High':
-    //           this.flagVisible = true;
-    //           this.flagURL = this.highPriority;
-    //           this.priorityInt = 3;
-    //           break;
-    //         case 'Medium':
-    //             this.flagVisible = true;
-    //             this.flagURL = this.mediumPriority;
-    //             this.priorityInt = 2;
-    //           break;
-    //         case 'Low':
-    //             this.flagVisible = true;
-    //             this.flagURL = this.lowPriority;
-    //             this.priorityInt = 1;
-    //         break;
-    //         default:
-    //             this.flagURL = '';
-    //             this.flagVisible = false;
-    //       }
-
-    //     if (this.casePriority === 'High') {
-    //         this.flagURL = this.highPriority;
-    //     }
-    // }
-
     handlePriorityIncrease() {
         console.log('handlePriorityIncrease clicked.');
         let priorityInt = this.priorityInt+1;
+        let caseUpdateId = this.caseId;
         this.dispatchEvent(new CustomEvent('prioritychange', {
             detail: {
-                priority: priorityInt
+                priority: priorityInt,
+                caseId: caseUpdateId
             }
         }));
     }
@@ -108,10 +71,11 @@ export default class CaseDetail extends LightningElement {
     handlePriorityDecrease() {
         console.log('handlePriorityDecrease clicked.');
         let priorityInt = this.priorityInt-1;
+        let caseUpdateId = this.caseId;
         this.dispatchEvent(new CustomEvent('prioritychange', {
             detail: {
                 priority: priorityInt,
-                caseId: this.caseId
+                caseId: caseUpdateId
             }
         }));
     }
