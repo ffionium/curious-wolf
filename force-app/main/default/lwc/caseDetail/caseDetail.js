@@ -22,12 +22,12 @@ export default class CaseDetail extends LightningElement {
     @api
     assignCaseData() {
         if(this.selectedRow) {
-            console.log('renderedCallback selectedRow: ' + this.selectedRow);
-            console.log('renderedCallback selectedRow String: ' + JSON.stringify(this.selectedRow));
-            this.caseId = this.selectedRow[0].Id;
-            this.caseNumber = this.selectedRow[0].CaseNumber;
-            this.caseSubject = this.selectedRow[0].Subject;
-            this.casePriority = this.selectedRow[0].Priority;
+            console.log('assignCaseData selectedRow: ' + this.selectedRow);
+            console.log('assignCaseData selectedRow String: ' + JSON.stringify(this.selectedRow));
+            this.caseId = this.selectedRow.Id;
+            this.caseNumber = this.selectedRow.CaseNumber;
+            this.caseSubject = this.selectedRow.Subject;
+            this.casePriority = this.selectedRow.Priority;
             this.renderFlag();
         }
     }
