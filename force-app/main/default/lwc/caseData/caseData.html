@@ -1,7 +1,8 @@
 <template>
     <div class="headerContainer">
         <div class="h1">Case data</div>        
-        <div class="filterSection">
+        <div class="filterSection">            
+            <!-- could have used HTML Select here as only need to access set of predefined options -->
             <lightning-combobox
             name="priorityFilters"
             class="combobox"
@@ -15,13 +16,17 @@
         </div>
     </div>
 
+    <!-- child component, passing the user selected case row, and receiving custom event containing data for updating the case -->
     <c-case-detail onprioritychange={changePriority} selected-row={selectedRow}></c-case-detail>
 
+    <!-- this is depcrecacted, but lwc:if has limitations: can't evaluate for true  -->
     <div if:false={showExpanded}>
+        <!-- lightning datatable instead of HTML table: Built-in Functionality: lightning-datatable comes with built-in features such as sorting, pagination, row selection, and inline editing. Only thing I've used is checkbox for onrowselection -->
         <lightning-datatable key-field="Id" data={cases} columns={columns} onrowselection={handleCaseSelection}>
         </lightning-datatable>
     </div>
     <div if:true={showExpanded}>
+        <!-- two tables: sometimes for expediency's sake, this is easier to do than using complex styling, esp if there isn't a huge amount of data to display -->
         <lightning-datatable key-field="Id" data={casesExpanded} columns={columnsExpanded} onrowselection={handleCaseSelection}>
         </lightning-datatable>    
     </div>

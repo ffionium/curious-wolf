@@ -1,6 +1,7 @@
 /* eslint-disable @lwc/lwc/no-async-operation */
 import { LightningElement, wire, track, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+// adapterId from adaptedModule
 import getCases from '@salesforce/apex/CaseDataController.getCases';
 import updateCasePriority from '@salesforce/apex/CaseDataController.updateCasePriority';
 // import { refreshApex } from "@salesforce/apex";
@@ -30,23 +31,31 @@ const priorities = [
     { label: 'Low', value: 'Low' }
   ];  
 
+// caseDatatable is extending LightningElement class
 export default class caseDatatable extends LightningElement {
 
-    @api columns = CASE_COLUMNS;
-    @api columnsExpanded = EXPANDED_CASE_COLUMNS;
+    // @api decorator not actually needed; properties are reactive by default (habit)
+    // @api does make properties available to parent components
+    columns = CASE_COLUMNS;
+    columnsExpanded = EXPANDED_CASE_COLUMNS;
 
+    // values for the combobox
     priorities = priorities;
     cases;
     casesExpanded;
 
-    @track priority = 'All';
-    @track selectedPriority = 'Choose a priority filter';
-    @track showExpanded = false;
+    // @track only needed for deep reactivity in complex objects or arrays.
+    priority = 'All';
+    selectedPriority = 'Choose a priority filter';
+    showExpanded = false;
 
     @track selectedRows;
     @track selectedRow;
     rowsSize;
 
+    // wire service, @wire adapterId, adapterConfig
+    // Apex call because array of sObjects, with related object fields below
+    // @wire makes it reactive, so when filter changes in handlePriorityFilter, table is updated
     @wire(getCases, { filter: '$priority' })
     wiredCases({ error, data }) {
         if (data) {
@@ -80,11 +89,13 @@ export default class caseDatatable extends LightningElement {
     handlePriorityFilter(event) {
         try {
             this.selectedPriority = event.target.value;
+            // this.priority = this.selectedPriority;
         } catch (error) {
             console.error('Error in handlePriorityFilter:', error);
         }
     }
 
+    // not needed necessarily, wanted to tie it to a button. 
     handleFilterButton() {
         try {
             this.priority = this.selectedPriority;
@@ -97,11 +108,13 @@ export default class caseDatatable extends LightningElement {
         this.showExpanded = !this.showExpanded;
     }
 
+    // promise
     handleCaseSelection(event) {
         
         this.selectedRows = event.detail.selectedRows;
         this.selectedRow = event.detail.selectedRows[0];
         this.rowsSize = this.selectedRows.length;
+        // this.handleRefresh();
 
         const rowSelectionPromise = new Promise((fulfill, decline) => {   
             if (this.rowsSize <= 1) {
@@ -110,8 +123,9 @@ export default class caseDatatable extends LightningElement {
                 decline('Too many rows selected.')
             }
          
-    });
+        });
     
+    // promise not actually needed, demo puropses. No asynchronous operations here, no need to use them to handle events
     rowSelectionPromise
         .then((rows) => {
 
@@ -140,6 +154,7 @@ export default class caseDatatable extends LightningElement {
         this.dispatchEvent(evt);
     }
 
+    // this actually does need promise, as we're waiting for a database operation to complete
     async changePriority(event) {
         let newPriority = event.detail.priority;
         let caseId = event.detail.caseId;

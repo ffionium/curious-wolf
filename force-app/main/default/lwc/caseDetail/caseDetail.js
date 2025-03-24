@@ -2,6 +2,10 @@ import { LightningElement, api, track } from 'lwc';
 
 export default class CaseDetail extends LightningElement {
 
+    // why child component
+    // modularity: could use this in a different parent component, make it more dynamic to handle data for different objects
+    // Separation of concerns: scope here is to display details, whereas the parent shows a collection of records
+    // improved readability
 
     @api selectedRow;
 
@@ -10,15 +14,22 @@ export default class CaseDetail extends LightningElement {
     @track caseNumber;
     @track casePriority;
 
+    // caseId;
+    // caseSubject;
+    // caseNumber;
+    // casePriority;
+
     priorityInt;
 
     flagURL;
     flagVisible = false;
 
+    // hardcoded values: could store as static resources
     highPriority = 'https://myflag.com.au/wp-content/uploads/2017/02/red-hand-waver-flag.jpg';
     mediumPriority = 'https://m.media-amazon.com/images/I/31aNRfZKbBL._SY445_SX342_QL70_ML2_.jpg';
     lowPriority = 'https://i.ebayimg.com/images/g/VzUAAOSwU7BhOSyK/s-l1200.jpg';
 
+    // @api because called by parent component
     @api
     assignCaseData() {
         if(this.selectedRow) {
@@ -56,6 +67,7 @@ export default class CaseDetail extends LightningElement {
         }
     }
 
+    // could condense here, make 1 method with parameters
     handlePriorityIncrease() {
         console.log('handlePriorityIncrease clicked.');
         let priorityInt = this.priorityInt+1;
