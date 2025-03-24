@@ -1,4 +1,4 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import getCases from '@salesforce/apex/CaseDataController.getCases';
 // import getCasesExpanded from '@salesforce/apex/CaseDataController.getCasesExpanded';
 
@@ -29,16 +29,17 @@ const priorities = [
 
 export default class caseDatatable extends LightningElement {
 
-    columns = CASE_COLUMNS;
-    columnsExpanded = EXPANDED_CASE_COLUMNS;
+    @api columns = CASE_COLUMNS;
+    @api columnsExpanded = EXPANDED_CASE_COLUMNS;
     priorities = priorities;
     cases;
     casesExpanded;
-    placeholder = 'selectedPriority';
-    @track selectedPriority = 'All';
+
+    @track priority = 'All';
+    @api selectedPriority = 'Choose a priority filter';
     @track showExpanded = false;
 
-    @wire(getCases, { filter: '$selectedPriority' })
+    @wire(getCases, { filter: '$priority' })
     wiredCases({ error, data }) {
         // data: array of Case records
         if (data) {
@@ -57,7 +58,7 @@ export default class caseDatatable extends LightningElement {
         }
     }
 
-    @wire(getCases, { filter: '$selectedPriority' })
+    @wire(getCases, { filter: '$priority' })
     wiredCasesExpanded({ error, data }) {
         // data: array of Case records
         if (data) {
@@ -82,13 +83,22 @@ export default class caseDatatable extends LightningElement {
         try {
             this.selectedPriority = event.target.value;
             console.log('Selected Priority:', this.selectedPriority);
-            refreshApex(this.wiredCases);
         } catch (error) {
             console.error('Error in handlePriorityFilter:', error);
         }
     }
 
-    handleToggle() {
+    handleFilterButton() {
+        try {
+            this.priority = this.selectedPriority;
+            refreshApex(this.wiredCases);
+        } catch (error) {
+            console.error('Error in handleFilterButton:', error);
+        } 
+        
+    }
+
+    handleToggleButton() {
         this.showExpanded = !this.showExpanded;
     }
 
